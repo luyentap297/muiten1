@@ -57,7 +57,7 @@ let teams = [
 let currentTeamIndex = 0;
 let currentQuestion = 0;
 let timer;
-let timeLeft = 05;
+let timeLeft = 10;
 
 function startGame(teamIndex) {
   currentTeamIndex = teamIndex;
@@ -74,7 +74,7 @@ function startGame(teamIndex) {
 }
 
 function startTimer() {
-  timeLeft = 05;
+  timeLeft = 10;
   document.getElementById("timer").textContent = "⏰ Thời gian: " + timeLeft + "s";
   clearInterval(timer);
   timer = setInterval(() => {
