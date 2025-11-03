@@ -62,6 +62,11 @@ let timeLeft = 05;
 function startGame(teamIndex) {
   currentTeamIndex = teamIndex;
   currentQuestion = 0;
+
+  // 👉 Xóa kết quả cũ, chỉ giữ lại lần chơi mới nhất
+  teams[teamIndex].score = 0;
+  teams[teamIndex].results = [];
+
   document.getElementById("login").classList.remove("active");
   document.getElementById("game").classList.add("active");
   showQuestion();
@@ -158,6 +163,10 @@ function enableDragAndTouch(id) {
 }
 
 function checkAnswer(timeout = false) {
+  // Ngăn người chơi bấm nhiều lần
+  const submitBtn = document.querySelector("button[onclick='checkAnswer()']");
+  if (submitBtn) submitBtn.disabled = true;
+
   clearInterval(timer);
   const q = questions[currentQuestion];
   const team = teams[currentTeamIndex];
