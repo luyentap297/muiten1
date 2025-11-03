@@ -21,16 +21,12 @@
   #timer { font-size: 22px; font-weight: bold; color: #ff4136; margin-top: 10px; }
   #result { font-size: 20px; font-weight: bold; color: #2ECC40; margin-top: 20px; }
   #scoreboard { margin-top: 30px; font-size: 18px; text-align: left; width: 90%; margin-left: auto; margin-right: auto; }
-  .arrow-display { font-size: 28px; margin-right: 5px; }
-  .arrow-display.up { color: green; }
-  .arrow-display.down { color: red; }
 </style>
 </head>
 <body>
 
 <h1>🎯 Trò chơi Mũi Tên Thông Minh</h1>
 
-<!-- Màn hình chọn nhóm -->
 <div id="login" class="screen active">
   <div class="login-box">
     <h2>Chọn nhóm để bắt đầu</h2>
@@ -39,13 +35,11 @@
   </div>
 </div>
 
-<!-- Màn hình trò chơi -->
 <div id="game" class="screen"></div>
 <div id="timer"></div>
 <div id="result"></div>
 <div id="scoreboard"></div>
 
-<!-- Âm thanh -->
 <audio id="sound-correct" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
 <audio id="sound-wrong" src="https://actions.google.com/sounds/v1/cartoon/slide_whistle_to_drum_hit.ogg"></audio>
 <audio id="sound-timeout" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
@@ -103,22 +97,37 @@ function showQuestion() {
         <div class="arrow-box" id="co"><strong>Có</strong></div>
       </div>
       <div style="margin-top:30px;">
-        <span class="arrow up" id="up">↑</span>
-        <span class="arrow down" id="down">↓</span>
+        <span class="arrow up" id="up" draggable="true">↑</span>
+        <span class="arrow down" id="down" draggable="true">↓</span>
       </div>
       <button onclick="checkAnswer()">Nộp bài</button>
     </div>
   `;
 
-  enableTouchDrag("up");
-  enableTouchDrag("down");
+  enableDragAndTouch("up");
+  enableDragAndTouch("down");
 }
 
-// --- Kéo thả cảm ứng ---
-function enableTouchDrag(id) {
+// --- Hỗ trợ kéo thả chuột và cảm ứng ---
+function enableDragAndTouch(id) {
   const arrow = document.getElementById(id);
   let offsetX = 0, offsetY = 0;
 
+  // === Kéo bằng chuột ===
+  arrow.addEventListener("dragstart", (e) => {
+    e.dataTransfer.setData("text/plain", id);
+  });
+
+  document.querySelectorAll(".arrow-box").forEach(box => {
+    box.addEventListener("dragover", (e) => e.preventDefault());
+    box.addEventListener("drop", (e) => {
+      const draggedId = e.dataTransfer.getData("text/plain");
+      const draggedArrow = document.getElementById(draggedId);
+      box.appendChild(draggedArrow);
+    });
+  });
+
+  // === Kéo bằng cảm ứng ===
   arrow.addEventListener("touchstart", (e) => {
     const touch = e.touches[0];
     offsetX = touch.clientX - arrow.getBoundingClientRect().left;
@@ -221,6 +230,5 @@ function backToLogin() {
   document.getElementById("login").classList.add("active");
 }
 </script>
-
 </body>
 </html>
